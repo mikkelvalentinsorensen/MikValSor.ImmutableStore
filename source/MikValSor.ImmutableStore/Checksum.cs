@@ -26,7 +26,7 @@ namespace MikValSor.Immutable
 
     /// <summary>Class for checksum of immutable objects.</summary>
     [Serializable]
-    public sealed class Checksum : ISerializable
+    public sealed class Checksum : ISerializable, IComparable, IComparable<Checksum>, IEquatable<Checksum>
     {
         private static readonly SHA512Managed Sha512 = new SHA512Managed();
         private static readonly MemoryCache Cache = new MemoryCache(nameof(Checksum));
@@ -45,6 +45,43 @@ namespace MikValSor.Immutable
             this.base64 = new Base64(bytes);
         }
         #pragma warning restore CA1801
+
+        #pragma warning disable CS1591
+        public static bool operator ==(Checksum left, Checksum right)
+        {
+            if (ReferenceEquals(left, null))
+            {
+                return ReferenceEquals(right, null);
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Checksum left, Checksum right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(Checksum left, Checksum right)
+        {
+            return ReferenceEquals(left, null) ? !ReferenceEquals(right, null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(Checksum left, Checksum right)
+        {
+            return ReferenceEquals(left, null) || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(Checksum left, Checksum right)
+        {
+            return !ReferenceEquals(left, null) && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(Checksum left, Checksum right)
+        {
+            return ReferenceEquals(left, null) ? ReferenceEquals(right, null) : left.CompareTo(right) >= 0;
+        }
+        #pragma warning restore CS1591
 
         /// <summary>Generetes and returns checksum that corosponds to hash value.</summary>
         /// <param name="base64">Base64 string representing checksum of 64 bytes.</param>
@@ -131,7 +168,7 @@ namespace MikValSor.Immutable
 
             return Get(Sha512.ComputeHash(bytes));
         }
-        
+
         /// <inheritdoc/>
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -164,6 +201,61 @@ namespace MikValSor.Immutable
         public override string ToString()
         {
             return this.base64.ToString();
+        }
+
+        /// <inheritdoc/>
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+            {
+                return 1;
+            }
+
+            Checksum other = obj as Checksum;
+            if (other != null)
+            {
+                return string.Compare(this.ToString(), other.ToString(), StringComparison.InvariantCulture);
+            }
+            else
+            {
+                throw new ArgumentException($"Object is not a {nameof(Checksum)}");
+            }
+        }
+
+        /// <inheritdoc/>
+        public int CompareTo(Checksum other)
+        {
+            if (other != null)
+            {
+                return string.Compare(this.ToString(), other.ToString(), StringComparison.InvariantCulture);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(Checksum other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return string.Equals(this.ToString(), other.ToString(), StringComparison.InvariantCulture);
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            return ((IEquatable<Checksum>)this).Equals(obj as Checksum);
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return this.ToString().GetHashCode();
         }
     }
 }
