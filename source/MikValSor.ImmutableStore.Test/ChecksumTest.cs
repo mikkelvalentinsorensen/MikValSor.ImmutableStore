@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using MikValSor.Encoding;
+using NUnit.Framework;
 using System;
 
 namespace MikValSor.Immutable.Test
@@ -59,14 +60,14 @@ namespace MikValSor.Immutable.Test
         }
 
         [Test]
-        public void Get_null()
+        public void Get_array_null()
         {
             //Arrange
 
             //Act
             try
             {
-                Checksum.Get((string)null);
+                Checksum.Get((byte[])null);
             }
             catch (ArgumentNullException)
             {
@@ -137,6 +138,44 @@ namespace MikValSor.Immutable.Test
                 Checksum.Get(new byte[65]);
             }
             catch (ArgumentException)
+            {
+                return;
+            }
+
+            //Assert
+            Assert.Fail();
+        }
+
+        [Test]
+        public void Get_base64_null()
+        {
+            //Arrange
+
+            //Act
+            try
+            {
+                Checksum.Get((Base64)null);
+            }
+            catch (ArgumentNullException)
+            {
+                return;
+            }
+
+            //Assert
+            Assert.Fail();
+        }
+
+        [Test]
+        public void Get_string_null()
+        {
+            //Arrange
+
+            //Act
+            try
+            {
+                Checksum.Get((string)null);
+            }
+            catch (ArgumentNullException)
             {
                 return;
             }
