@@ -55,7 +55,7 @@ namespace MikValSor.Immutable.Test
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("uCRNAomB1pOve0Vq+O+kytY9KC4Z/xSULCRuUNk1HSJwSoAqccNYC2Nw3kzrKTwySoQjNCVX1OXDhDjw42kQ7g==", result.ToBase64());
+            Assert.AreEqual("uCRNAomB1pOve0Vq+O+kytY9KC4Z/xSULCRuUNk1HSJwSoAqccNYC2Nw3kzrKTwySoQjNCVX1OXDhDjw42kQ7g==", result.ToString());
         }
 
         [Test]

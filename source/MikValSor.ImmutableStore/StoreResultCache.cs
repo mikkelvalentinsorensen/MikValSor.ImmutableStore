@@ -44,7 +44,7 @@ namespace MikValSor.Immutable
                 throw new ArgumentException("Contains was false.", nameof(value));
             }
 
-            var key = value.GetPresistedValue().Checksum.ToBase64();
+            var key = value.GetPresistedValue().Checksum.ToString();
             var cacheValue = (StoreResult<T>)this.memoryCache.AddOrGetExisting(key, value, new CacheItemPolicy());
             if (cacheValue == null)
             {
@@ -67,7 +67,7 @@ namespace MikValSor.Immutable
                 throw new ArgumentNullException(nameof(checksum));
             }
 
-            var key = checksum.ToBase64();
+            var key = checksum.ToString();
             value = (StoreResult<T>)this.memoryCache.Get(key);
             return value != null;
         }

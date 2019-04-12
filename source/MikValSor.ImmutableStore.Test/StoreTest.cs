@@ -98,7 +98,7 @@ namespace MikValSor.Immutable.Test
             //Assert
             Assert.IsNotNull(presistedValue);
             Assert.IsNotNull(presistedValue.Checksum);
-            Assert.AreEqual("YZrsXP5n1OVHAFK8YfUZVXpzXFmt7H9sCeaPhMOfdP32LnUvP+HmNFvHVs1CsYR6IzSz3gwi+l285jvV2aWQng==", presistedValue.Checksum.ToBase64());
+            Assert.AreEqual("YZrsXP5n1OVHAFK8YfUZVXpzXFmt7H9sCeaPhMOfdP32LnUvP+HmNFvHVs1CsYR6IzSz3gwi+l285jvV2aWQng==", presistedValue.Checksum.ToString());
             Assert.AreEqual(target, presistedValue.Store);
             Assert.AreEqual(value, presistedValue.Value);
         }
@@ -124,7 +124,7 @@ namespace MikValSor.Immutable.Test
             //Assert
             Assert.IsNotNull(presistedValue);
             Assert.IsNotNull(presistedValue.Checksum);
-            Assert.AreEqual("YZrsXP5n1OVHAFK8YfUZVXpzXFmt7H9sCeaPhMOfdP32LnUvP+HmNFvHVs1CsYR6IzSz3gwi+l285jvV2aWQng==", presistedValue.Checksum.ToBase64());
+            Assert.AreEqual("YZrsXP5n1OVHAFK8YfUZVXpzXFmt7H9sCeaPhMOfdP32LnUvP+HmNFvHVs1CsYR6IzSz3gwi+l285jvV2aWQng==", presistedValue.Checksum.ToString());
             Assert.AreEqual(target, presistedValue.Store);
             Assert.AreEqual(value, presistedValue.Value);
         }
@@ -151,7 +151,7 @@ namespace MikValSor.Immutable.Test
             Assert.IsNotNull(presistedValue);
             Assert.IsTrue(presistedValue.Contains);
             Assert.IsNotNull(presistedValue.GetPresistedValue().Checksum);
-            Assert.AreEqual("YZrsXP5n1OVHAFK8YfUZVXpzXFmt7H9sCeaPhMOfdP32LnUvP+HmNFvHVs1CsYR6IzSz3gwi+l285jvV2aWQng==", presistedValue.GetPresistedValue().Checksum.ToBase64());
+            Assert.AreEqual("YZrsXP5n1OVHAFK8YfUZVXpzXFmt7H9sCeaPhMOfdP32LnUvP+HmNFvHVs1CsYR6IzSz3gwi+l285jvV2aWQng==", presistedValue.GetPresistedValue().Checksum.ToString());
             Assert.AreEqual(target, presistedValue.GetPresistedValue().Store);
             Assert.AreEqual(value, presistedValue.GetPresistedValue().Value);
         }

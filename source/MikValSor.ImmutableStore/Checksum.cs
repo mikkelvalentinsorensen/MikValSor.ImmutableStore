@@ -22,6 +22,7 @@ namespace MikValSor.Immutable
     using System.Runtime.Caching;
     using System.Runtime.Serialization;
     using System.Security.Cryptography;
+    using MikValSor.Encoding;
 
     /// <summary>Class for checksum of immutable objects.</summary>
     [Serializable]
@@ -30,9 +31,9 @@ namespace MikValSor.Immutable
         private static readonly SHA512Managed Sha512 = new SHA512Managed();
         private static readonly MemoryCache Cache = new MemoryCache(nameof(Checksum));
 
-        private readonly string base64;
+        private readonly Base64 base64;
 
-        private Checksum(string base64)
+        private Checksum(Base64 base64)
         {
             this.base64 = base64;
         }
@@ -41,9 +42,9 @@ namespace MikValSor.Immutable
         private Checksum(SerializationInfo info, StreamingContext context)
         {
             var bytes = (byte[])info.GetValue("B", typeof(byte[]));
-            this.base64 = Convert.ToBase64String(bytes);
+            this.base64 = new Base64(bytes);
         }
-#pragma warning restore CA1801
+        #pragma warning restore CA1801
 
         /// <summary>Generetes and returns checksum that corosponds to hash value.</summary>
         /// <param name="base64">Base64 string representing checksum of 64 bytes.</param>
@@ -55,7 +56,22 @@ namespace MikValSor.Immutable
                 throw new ArgumentNullException(nameof(base64));
             }
 
-            var bytes = Convert.FromBase64String(base64);
+            var bytes = Base64.Parse(base64).ToByteArray();
+
+            return Get(bytes);
+        }
+
+        /// <summary>Generetes and returns checksum that corosponds to hash value.</summary>
+        /// <param name="base64">Base64 value representing checksum of 64 bytes.</param>
+        /// <returns>Returns checksum with value of bytes.</returns>
+        public static Checksum Get(Base64 base64)
+        {
+            if (base64 == null)
+            {
+                throw new ArgumentNullException(nameof(base64));
+            }
+
+            var bytes = base64.ToByteArray();
 
             return Get(bytes);
         }
@@ -75,17 +91,17 @@ namespace MikValSor.Immutable
                 throw new ArgumentException("Length must be 64", nameof(bytes));
             }
 
-            var base64 = Convert.ToBase64String(bytes);
+            var base64 = new Base64(bytes);
 
-            var checksum = (Checksum)Cache.Get(base64);
+            var checksum = (Checksum)Cache.Get(base64.ToString());
 
             if (checksum == null)
             {
                 checksum = new Checksum(base64);
-                var c = (Checksum)Cache.Get(base64);
+                var c = (Checksum)Cache.Get(base64.ToString());
                 if (c == null)
                 {
-                    Cache.Add(base64, checksum, new CacheItemPolicy());
+                    Cache.Add(base64.ToString(), checksum, new CacheItemPolicy());
                 }
                 else
                 {
@@ -115,32 +131,39 @@ namespace MikValSor.Immutable
 
             return Get(Sha512.ComputeHash(bytes));
         }
-
-        /// <summary>converts checksum to byte array.</summary>
-        /// <returns>Returns byte array representing checksum.</returns>
-        public byte[] ToByteArray()
-        {
-            return Convert.FromBase64String(this.base64);
-        }
-
+        
         /// <inheritdoc/>
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("B", Convert.FromBase64String(this.base64));
+            info.AddValue("B", this.base64.ToByteArray());
         }
 
-        /// <summary>Returns Base64 encoded string of checksum.</summary>
-        /// <returns>Base64 string.</returns>
-        public string ToBase64()
+        /// <summary>Returns Base64 encoded of checksum.</summary>
+        /// <returns>Base64 representation of checksum.</returns>
+        public Base64 ToBase64()
         {
             return this.base64;
         }
 
+        /// <summary>Returns Base32 encoded of checksum.</summary>
+        /// <returns>Base63 representation of checksum.</returns>
+        public Base32 ToBase32()
+        {
+            var bytes = this.base64.ToByteArray();
+            return new Base32(bytes);
+        }
+
         /// <summary>Returns bytearray of checksum.</summary>
         /// <returns>Bytearray of checksum.</returns>
-        public byte[] ToBytArray()
+        public byte[] ToByteArray()
         {
-            return Convert.FromBase64String(this.base64);
+            return this.base64.ToByteArray();
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return this.base64.ToString();
         }
     }
 }

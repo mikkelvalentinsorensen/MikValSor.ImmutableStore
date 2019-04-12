@@ -108,13 +108,12 @@ namespace MikValSor.Immutable
 
         private string GetFilename(Checksum checksum)
         {
-            var bytes = Convert.FromBase64String(checksum.ToBase64());
-            var base32 = Base32Encoder.Encode(bytes);
+            var base32 = checksum.ToBase32();
             return $"{this.folderPath}/{base32}{FileExtension}";
         }
 
-        private bool Contains(Checksum checksum) => this.knownExist.ContainsKey(checksum.ToBase64());
+        private bool Contains(Checksum checksum) => this.knownExist.ContainsKey(checksum.ToString());
 
-        private void MarkAsExists(Checksum checksum) => this.knownExist.AddOrUpdate(checksum.ToBase64(), new object(), (k, v) => v);
+        private void MarkAsExists(Checksum checksum) => this.knownExist.AddOrUpdate(checksum.ToString(), new object(), (k, v) => v);
     }
 }
