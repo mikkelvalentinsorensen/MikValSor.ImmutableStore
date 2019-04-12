@@ -22,7 +22,7 @@ namespace MikValSor.Immutable
 
     /// <summary>Class that warps value to indicate that it has been presisted already.</summary>
     /// <typeparam name="T">Type of presisted value.</typeparam>
-    public class Persisted<T>
+    public class Persisted<T> : IEquatable<Persisted<T>>
     {
         private readonly T value;
         private readonly Checksum checksum;
@@ -62,5 +62,27 @@ namespace MikValSor.Immutable
         }
         #pragma warning restore CA2225
 
+        /// <inheritdoc/>
+        public bool Equals(Persisted<T> other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return this.Checksum.Equals(other.Checksum);
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Persisted<T>);
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return this.Checksum.GetHashCode();
+        }
     }
 }
