@@ -22,7 +22,7 @@ namespace MikValSor.Immutable
 
     /// <summary>Class for signaling if store contains data and return it.</summary>
     /// <typeparam name="T">Type of presisted value.</typeparam>
-    public class StoreResult<T>
+    public class StoreResult<T> : IEquatable<StoreResult<T>>
     {
         private readonly Persisted<T> presistedValue;
         private readonly bool contains;
@@ -83,6 +83,39 @@ namespace MikValSor.Immutable
             }
 
             throw new DoesNotContainValueException();
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(StoreResult<T> other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (this.Contains != other.Contains)
+            {
+                return false;
+            }
+
+            if (!this.Contains)
+            {
+                return true;
+            }
+
+            return this.presistedValue.Equals(other.GetPresistedValue());
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as StoreResult<T>);
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return this.presistedValue.GetHashCode();
         }
     }
 }
